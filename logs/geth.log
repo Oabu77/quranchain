@@ -1,0 +1,63 @@
+INFO [11-18|22:57:11.606] Maximum peer count                       ETH=50 total=50
+INFO [11-18|22:57:11.608] Smartcard socket not found, disabling    err="stat /run/pcscd/pcscd.comm: no such file or directory"
+ERROR[11-18|22:57:11.609] The static-nodes.json file is deprecated and ignored. Use P2P.StaticNodes in config.toml instead.
+WARN [11-18|22:57:11.610] The flag --mine is deprecated and will be removed
+INFO [11-18|22:57:11.611] Set global gas cap                       cap=50,000,000
+INFO [11-18|22:57:11.611] Initializing the KZG library             backend=gokzg
+INFO [11-18|22:57:11.631] Allocated trie memory caches             clean=154.00MiB dirty=256.00MiB
+INFO [11-18|22:57:11.631] Using pebble as the backing database
+INFO [11-18|22:57:11.632] Allocated cache and file handles         database=/home/oem/QuranChain/data/geth/chaindata cache=512.00MiB handles=524,288
+INFO [11-18|22:57:11.665] Opened ancient database                  database=/home/oem/QuranChain/data/geth/chaindata/ancient/chain readonly=false
+INFO [11-18|22:57:11.667] State scheme set to already existing     scheme=path
+INFO [11-18|22:57:11.669] Initialising Ethereum protocol           network=323,671 dbversion=8
+INFO [11-18|22:57:11.675] Opened ancient database                  database=/home/oem/QuranChain/data/geth/chaindata/ancient/state readonly=false
+INFO [11-18|22:57:11.675] 
+INFO [11-18|22:57:11.675] ---------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO [11-18|22:57:11.675] Chain ID:  1 (mainnet)
+INFO [11-18|22:57:11.675] Consensus: Beacon (proof-of-stake), merged from Ethash (proof-of-work)
+INFO [11-18|22:57:11.675] 
+INFO [11-18|22:57:11.675] Pre-Merge hard forks (block based):
+INFO [11-18|22:57:11.675]  - Homestead:                   #1150000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/homestead.md)
+INFO [11-18|22:57:11.675]  - DAO Fork:                    #1920000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/dao-fork.md)
+INFO [11-18|22:57:11.675]  - Tangerine Whistle (EIP 150): #2463000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/tangerine-whistle.md)
+INFO [11-18|22:57:11.675]  - Spurious Dragon/1 (EIP 155): #2675000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)
+INFO [11-18|22:57:11.675]  - Spurious Dragon/2 (EIP 158): #2675000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)
+INFO [11-18|22:57:11.675]  - Byzantium:                   #4370000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/byzantium.md)
+INFO [11-18|22:57:11.675]  - Constantinople:              #7280000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/constantinople.md)
+INFO [11-18|22:57:11.675]  - Petersburg:                  #7280000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/petersburg.md)
+INFO [11-18|22:57:11.675]  - Istanbul:                    #9069000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md)
+INFO [11-18|22:57:11.675]  - Muir Glacier:                #9200000  (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md)
+INFO [11-18|22:57:11.675]  - Berlin:                      #12244000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md)
+INFO [11-18|22:57:11.675]  - London:                      #12965000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)
+INFO [11-18|22:57:11.675]  - Arrow Glacier:               #13773000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/arrow-glacier.md)
+INFO [11-18|22:57:11.675]  - Gray Glacier:                #15050000 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/gray-glacier.md)
+INFO [11-18|22:57:11.675] 
+INFO [11-18|22:57:11.675] Merge configured:
+INFO [11-18|22:57:11.675]  - Hard-fork specification:    https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md
+INFO [11-18|22:57:11.675]  - Network known to be merged: true
+INFO [11-18|22:57:11.675]  - Total terminal difficulty:  58750000000000000000000
+INFO [11-18|22:57:11.675] 
+INFO [11-18|22:57:11.675] Post-Merge hard forks (timestamp based):
+INFO [11-18|22:57:11.675]  - Shanghai:                    @1681338455 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md)
+INFO [11-18|22:57:11.676]  - Cancun:                      @1710338135 (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/cancun.md)
+INFO [11-18|22:57:11.676] 
+INFO [11-18|22:57:11.676] ---------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO [11-18|22:57:11.676] 
+INFO [11-18|22:57:11.676] Loaded most recent local block           number=0 hash=d4e567..cb8fa3 td=17,179,869,184 age=55y8mo6d
+INFO [11-18|22:57:11.676] Initialized transaction indexer          range="last 2350000 blocks"
+INFO [11-18|22:57:11.677] Loaded local transaction journal         transactions=0 dropped=0
+INFO [11-18|22:57:11.689] Gasprice oracle is ignoring threshold set threshold=2
+WARN [11-18|22:57:11.692] Unclean shutdown detected                booted=2024-11-16T20:51:31-0800 age=2d2h5m
+WARN [11-18|22:57:11.692] Unclean shutdown detected                booted=2024-11-18T14:35:18-0800 age=8h21m53s
+WARN [11-18|22:57:11.692] Unclean shutdown detected                booted=2024-11-18T15:36:23-0800 age=7h20m48s
+WARN [11-18|22:57:11.692] Unclean shutdown detected                booted=2024-11-18T15:46:29-0800 age=7h10m42s
+WARN [11-18|22:57:11.693] Engine API enabled                       protocol=eth
+INFO [11-18|22:57:11.693] Starting peer-to-peer node               instance=Geth/v1.14.11-stable-f3c696fa/linux-amd64/go1.23.1
+INFO [11-18|22:57:11.772] New local node record                    seq=1,731,819,091,621 id=a57450a272b206e2 ip=127.0.0.1 udp=30303 tcp=30303
+INFO [11-18|22:57:11.838] Started P2P networking                   self=enode://605ee1bbaf0122498eaaaa91d15c05067b60eddd1b43508c24be63035a3a51f86b1a00f574491cfa6e9bee1680b0974079cf43ae38935ad016ee04736026c301@127.0.0.1:30303
+INFO [11-18|22:57:11.840] IPC endpoint opened                      url=/home/oem/QuranChain/data/geth.ipc
+INFO [11-18|22:57:11.840] Loaded JWT secret file                   path=/home/oem/QuranChain/data/jwtsecret crc32=0x7b5e404d
+INFO [11-18|22:57:11.840] HTTP server started                      endpoint=[::]:8545 auth=false prefix= cors= vhosts=localhost
+INFO [11-18|22:57:11.840] WebSocket enabled                        url=ws://[::]:8551
+INFO [11-18|22:57:11.840] HTTP server started                      endpoint=[::]:8551 auth=true  prefix= cors=localhost vhosts=localhost
+Fatal: Failed to unlock account 0x4aC734e6B856C0FFDDDCAD871892bfFe1d1A1cd4 (no key for given address or file)
