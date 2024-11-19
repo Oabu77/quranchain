@@ -1,217 +1,191 @@
 import hashlib
-import time
 import json
+import time
+import random
+import string
+from tqdm import tqdm
 import os
 
+# Wallet class definition
+class Wallet:
+    def __init__(self, username, address=None):
+        self.username = username
+        self.address = address or self.create_wallet_address()
+        self.quran_coin_balance = 0
+        self.muslim_coin_balance = 0
 
+    def create_wallet_address(self):
+        return "MW" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
+
+    def add_quran_coin(self, amount):
+        self.quran_coin_balance += amount
+
+    def add_muslim_coin(self, amount):
+        self.muslim_coin_balance += amount
+
+    def to_dict(self):
+        return {
+            "username": self.username,
+            "address": self.address,
+            "quran_coin_balance": self.quran_coin_balance,
+            "muslim_coin_balance": self.muslim_coin_balance,
+        }
+
+    @staticmethod
+    def from_dict(data):
+        wallet = Wallet(data["username"], data["address"])
+        wallet.quran_coin_balance = data["quran_coin_balance"]
+        wallet.muslim_coin_balance = data["muslim_coin_balance"]
+        return wallet
+
+# Block class definition
 class Block:
     def __init__(self, index, timestamp, data, previous_hash=""):
         self.index = index
         self.timestamp = timestamp
-        self.data = data  # Quran data (surahs, rewards, etc.)
+        self.data = data
         self.previous_hash = previous_hash
-        self.nonce = 0
-        self.hash = self.compute_hash()
+        self.hash = self.calculate_hash()
 
-    def compute_hash(self):
-        """
-        Compute the SHA-256 hash of the block.
-        """
-        block_string = json.dumps({
-            "index": self.index,
-            "timestamp": self.timestamp,
-            "data": self.data,
-            "previous_hash": self.previous_hash,
-            "nonce": self.nonce
-        }, sort_keys=True, default=str)
-        return hashlib.sha256(block_string.encode()).hexdigest()
+    def calculate_hash(self):
+        block_string = json.dumps(self.__dict__, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
 
-    def mine_block(self, difficulty):
-        """
-        Proof of Work: Adjust nonce until hash matches the difficulty target.
-        """
-        target = "0" * difficulty
-        while not self.hash.startswith(target):
-            self.nonce += 1
-            self.hash = self.compute_hash()
-
-
-class QuranChain:
-    def __init__(self, difficulty=6):
-        self.chain = []
-        self.pending_rewards = []  # Track pending rewards
-        self.difficulty = difficulty
-        self.create_genesis_block()
+# Blockchain class definition
+class Blockchain:
+    def __init__(self):
+        self.chain = [self.create_genesis_block()]
 
     def create_genesis_block(self):
-        """
-        Create the genesis block.
-        """
-        genesis_block = Block(0, time.time(), {"message": "Genesis Block: QuranChain Begins"}, "0")
-        self.chain.append(genesis_block)
-
-    def get_last_block(self):
-        """
-        Get the most recent block in the chain.
-        """
-        return self.chain[-1]
+        return Block(0, time.time(), "Genesis Block", "0")
 
     def add_block(self, data):
-        """
-        Add a new block to the chain.
-        """
-        last_block = self.get_last_block()
-        new_block = Block(len(self.chain), time.time(), data, last_block.hash)
-        print(f"Mining block for: {data.get('type', 'Generic Block')}...")
-        new_block.mine_block(self.difficulty)
-        print(f"Block mined: {new_block.hash}")
+        previous_block = self.chain[-1]
+        new_block = self.mine_block(data, previous_block.hash)
         self.chain.append(new_block)
+        return new_block
 
-    def add_reward(self, miner, surah_number, ayah_count):
-        """
-        Add a QuranCoin reward for memorization/mining.
-        """
-        reward = {
-            "miner": miner,
-            "reward_type": "QuranCoin",
-            "surah": surah_number,
-            "ayah_count": ayah_count,
-            "reward_amount": ayah_count * 10  # Example reward logic
-        }
-        print(f"Adding QuranCoin reward for miner: {miner} - Surah {surah_number}, {ayah_count} ayahs.")
-        self.pending_rewards.append(reward)
+    def mine_block(self, data, previous_hash):
+        index = len(self.chain)
+        timestamp = time.time()
+        nonce = 0
+        difficulty = "000"  # Easier difficulty for testing
+        print(f"Starting mining for data: {data}")
+        with tqdm(total=100, desc=f"Mining Block {index}", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}") as pbar:
+            while True:
+                block = Block(index, timestamp, data, previous_hash)
+                block.nonce = nonce
+                block.hash = self.calculate_hash_with_nonce(block)
+                if block.hash.startswith(difficulty):
+                    return block
+                nonce += 1
 
-    def geo_location_mining(self, miner, location, prayer_count):
-        """
-        Reward users for praying at a masjid based on geo-location.
-        """
-        reward = {
-            "miner": miner,
-            "location": location,
-            "prayer_count": prayer_count,
-            "reward_type": "MuslimCoin",
-            "reward_amount": prayer_count * 5  # Example reward logic
-        }
-        print(f"Adding MuslimCoin reward for miner: {miner} at {location}.")
-        self.pending_rewards.append(reward)
+                if nonce % 1000 == 0:
+                    pbar.update(1)
 
-    def nft_rewards_for_memorization(self, miner, completion_percentage):
-        """
-        Grant an NFT reward for Quran memorization achievements.
-        """
-        if completion_percentage == 100:
-            reward = {
-                "miner": miner,
-                "reward_type": "NFT",
-                "nft_data": f"Certificate of Completion for Memorizing 100% of the Quran",
-                "reward_value": "Priceless"
-            }
-            print(f"Awarding NFT to miner: {miner} for memorizing 100% of the Quran.")
-            self.pending_rewards.append(reward)
+    def calculate_hash_with_nonce(self, block):
+        block_string = json.dumps({
+            "index": block.index,
+            "timestamp": block.timestamp,
+            "data": block.data,
+            "previous_hash": block.previous_hash,
+            "nonce": getattr(block, "nonce", 0)
+        }, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
 
-    def process_rewards(self):
-        """
-        Process and store all pending rewards in a block.
-        """
-        if self.pending_rewards:
-            reward_block = {"type": "Reward", "rewards": self.pending_rewards}
-            print("Processing rewards...")
-            self.add_block(reward_block)
-            self.pending_rewards = []  # Clear rewards after adding to block
-
-    def is_chain_valid(self):
-        """
-        Validate the integrity of the blockchain.
-        """
-        for i in range(1, len(self.chain)):
-            current = self.chain[i]
-            previous = self.chain[i - 1]
-            if current.hash != current.compute_hash():
-                return False
-            if current.previous_hash != previous.hash:
-                return False
-        return True
-
-
-def save_blockchain(blockchain, filename="quranchain.json"):
-    """
-    Save the blockchain to a JSON file.
-    """
-    with open(filename, "w", encoding="utf-8") as file:
-        chain_data = [block.__dict__ for block in blockchain.chain]
-        json.dump(chain_data, file, ensure_ascii=False, indent=4)
-    print(f"Blockchain saved to {filename}.")
-
-def load_blockchain(filename="quranchain.json"):
-    """
-    Load the blockchain from a JSON file.
-    """
-    if os.path.exists(filename):
-        with open(filename, "r", encoding="utf-8") as file:
-            chain_data = json.load(file)
-            blockchain = QuranChain()
-            blockchain.chain = [Block(**block) for block in chain_data]
-            return blockchain
-    else:
-        print("No existing blockchain found. Creating a new one.")
-        return QuranChain()
-
-
-def load_quran_data(filename):
-    """
-    Load Quran data from a JSON file.
-    """
+def load_wallets(filename="wallets.json"):
+    if not os.path.exists(filename):
+        return {}
     with open(filename, "r", encoding="utf-8") as file:
-        return json.load(file)
+        data = json.load(file)
+        return {username: Wallet.from_dict(wallet) for username, wallet in data.items()}
 
+def save_wallets(wallets, filename="wallets.json"):
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump({username: wallet.to_dict() for username, wallet in wallets.items()}, file, indent=4)
 
-def add_quran_to_blockchain(blockchain, quran_data):
-    """
-    Add Quranic text to the blockchain, one surah per block.
-    """
-    for surah in quran_data:
-        data = {
-            "type": "QuranText",
-            "surah_number": surah["chapter"],
-            "surah_name": surah.get("name", f"Surah {surah['chapter']}"),
-            "verses": surah["verses"]
-        }
-        print(f"Processing Surah: {data['surah_name']} (Chapter {data['surah_number']})")
-        blockchain.add_block(data)
+def user_signup(wallets, blockchain):
+    username = input("Enter your username: ").strip()
+    if username in wallets:
+        print(f"Username '{username}' is already taken.")
+        return None
+    wallet = Wallet(username)
+    wallets[username] = wallet
+    save_wallets(wallets)
+    print(f"Wallet created! Address: {wallet.address}")
+    
+    blockchain.add_block({
+        "type": "User",
+        "username": username,
+        "wallet_address": wallet.address,
+        "quran_coin_balance": wallet.quran_coin_balance,
+        "muslim_coin_balance": wallet.muslim_coin_balance
+    })
+    print(f"User {username} added to the blockchain.")
+    return wallet
 
+def user_signin(wallets):
+    username = input("Enter your username to sign in: ").strip()
+    if username in wallets:
+        wallet = wallets[username]
+        print(f"\nWelcome back, {username}!")
+        print(f"Wallet Address: {wallet.address}")
+        print(f"QuranCoin Balance: {wallet.quran_coin_balance}")
+        print(f"MuslimCoin Balance: {wallet.muslim_coin_balance}\n")
+        return wallet
+    else:
+        print("Error: Username not found. Please sign up first.")
+        return None
+
+def main():
+    blockchain = Blockchain()
+    wallets = load_wallets()
+    current_user = None
+
+    print("Welcome to QuranChain!")
+    while True:
+        print("\n1. Sign Up")
+        print("2. Sign In")
+        print("3. Mine Quran Text")
+        print("4. Exit")
+        choice = input("Choose an option: ").strip()
+
+        if choice == "1":
+            current_user = user_signup(wallets, blockchain)
+        elif choice == "2":
+            current_user = user_signin(wallets)
+        elif choice == "3":
+            if current_user:
+                try:
+                    with open('/home/ubuntu/quranchain/data/full_quran_with_arabic.json', 'r', encoding='utf-8') as file:
+                        quran_data = json.load(file)
+                except FileNotFoundError:
+                    print("Error: Quran data file not found.")
+                    continue
+
+                for surah in quran_data:
+                    surah_name = surah.get("name", f"Surah {surah['chapter']}")
+                    print(f"\nProcessing Surah: {surah_name} (Chapter {surah['chapter']})")
+                    mined_data = {
+                        "type": "QuranText",
+                        "surah_number": surah["chapter"],
+                        "surah_name": surah_name,
+                        "verses": surah["verses"]
+                    }
+                    mined_block = blockchain.add_block(mined_data)
+                    print(f"\nBlock Mined: {mined_block.hash}")
+                    for verse in surah["verses"]:
+                        print(f"  {verse['arabic']}")
+                    current_user.add_quran_coin(10)
+                    save_wallets(wallets)
+                    print(f"Rewarded {current_user.username} ({current_user.address}) with 10 QuranCoins.\n")
+            else:
+                print("Please sign in first to start mining.")
+        elif choice == "4":
+            print("Exiting QuranChain. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
-    # Load existing blockchain or create a new one
-    blockchain = load_blockchain()
-
-    # Load Quran data from the JSON file
-    quran_data = load_quran_data("full_quran_with_arabic.json")
-
-    # Add Quran data to the blockchain
-    add_quran_to_blockchain(blockchain, quran_data)
-
-    # Simulate rewards
-    blockchain.add_reward("miner_1", 1, 7)  # Surah 1, 7 ayahs
-    blockchain.geo_location_mining("miner_2", "Masjid Al-Haram", 5)
-    blockchain.nft_rewards_for_memorization("miner_3", 100)
-
-    # Process rewards
-    blockchain.process_rewards()
-
-    # Save the blockchain
-    save_blockchain(blockchain)
-
-    # Validate the blockchain
-    print("\nBlockchain valid:", blockchain.is_chain_valid())
-
-    # Print blockchain summary
-    for block in blockchain.chain:
-        print(f"Block {block.index} - Type: {block.data.get('type', 'N/A')}")
-        if block.data.get("type") == "Reward":
-            print("  Rewards:")
-            for reward in block.data.get("rewards", []):
-                print(f"    Miner: {reward['miner']}, Reward: {reward['reward_amount']} {reward['reward_type']}")
-        else:
-            print(f"  Surah: {block.data.get('surah_name', 'N/A')}")
-        print(f"  Hash: {block.hash}")
-        print("-" * 50)
+    main()
