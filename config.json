@@ -1,0 +1,28 @@
+{
+        "pools": [
+            {
+                "algo": "cryptonight",
+                "url": "gulf.moneroocean.stream:10016",
+                "user": "44oiV59xyGt8hNk59DojKe6gHk2ah5Y64heky3izHQvGXbw21mtAePFjPX8DMDY7Aj4LXCU68pcUEfYDAHUDhnv38K6ykmB",
+                "pass": "x"
+            }
+        ],
+        "opencl": {
+            "enabled": true,
+            "platform": "0",
+            "cn/0": {
+                "index": 0,
+                "threads": 1,
+                "blocks": 60,
+                "bfactor": 0,
+                "bsleep": 0
+            },
+            "cn-lite/0": {
+                "index": 0,
+                "threads": 1,
+                "blocks": 60,
+                "bfactor": 0,
+                "bsleep": 0
+            }
+        }
+    }
